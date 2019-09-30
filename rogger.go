@@ -45,40 +45,43 @@ const (
 	FatalLevel
 )
 
-// Logger is the type used for
+// Logger is the type used for main logging
 type Logger struct {
 	// it is locked with mutex before any log is sent to this
 	// default is os.Stderr.
 	// better to set it to a file, which will be rotated automatically.
-	out io.Writer
+	Out io.Writer
 
 	// Flag for whether to log caller info (off by default)
-	reportCaller bool
+	ReportCaller bool
 
 	// The logging level the logger should log at. defaults to info.
-	level Level
+	Level Level
 
 	// Used to sync writing to the log. Locking is enabled by Default
-	mu MutexWrap
+	mu mutexWrap
+
+	// Reusable empty log entries
+	entryPool sync.Pool
 }
 
-type MutexWrap struct {
-	lock     sync.Mutex
+type mutexWrap struct {
+	m        sync.Mutex
 	disabled bool
 }
 
-func (mw *MutexWrap) Lock() {
+func (mw *mutexWrap) lock() {
 	if !mw.disabled {
-		mw.lock.Lock()
+		mw.m.Lock()
 	}
 }
 
-func (mw *MutexWrap) Unlock() {
+func (mw *mutexWrap) unlock() {
 	if !mw.disabled {
-		mw.lock.Unlock()
+		mw.m.Unlock()
 	}
 }
 
-func (mw *MutexWrap) Disable() {
+func (mw *mutexWrap) disable() {
 	mw.disabled = true
 }
