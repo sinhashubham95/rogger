@@ -2,6 +2,7 @@ package rogger
 
 import (
 	"bytes"
+	"runtime"
 	"sync"
 	"time"
 )
@@ -12,11 +13,25 @@ var (
 
 // Entry is the final or intermediate logging data
 type Entry struct {
-	logger *Logger
+	Logger *Logger
+
 	// all the params set by the user
-	data Params
+	Data Params
+
 	// time at which log was created
-	time *time.Time
+	Time *time.Time
+
+	// calling method with package name
+	Caller *runtime.Frame
+
+	// log message
+	Message string
+
+	// When formatter is called in entry.log(), a Buffer may be set to entry
+	Buffer *bytes.Buffer
+
+	// err may contain a field formatting error
+	err string
 }
 
 func init() {

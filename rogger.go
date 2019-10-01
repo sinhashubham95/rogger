@@ -52,6 +52,9 @@ type Logger struct {
 	// better to set it to a file, which will be rotated automatically.
 	Out io.Writer
 
+	// formatter formats logs before finally sending to the writer
+	Formatter
+
 	// Flag for whether to log caller info (off by default)
 	ReportCaller bool
 
