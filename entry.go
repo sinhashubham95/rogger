@@ -128,6 +128,7 @@ func (entry *Entry) WithParams(params Params) *Entry {
 	}
 }
 
+// Overrides the time of the log entry.
 func (entry *Entry) WithTime(t time.Time) *Entry {
 	return &Entry{
 		Logger:  entry.Logger,
@@ -208,7 +209,11 @@ func (entry *Entry) Error(args ...interface{}) {
 
 func (entry *Entry) Fatal(args ...interface{}) {
 	entry.Log(FatalLevel, args...)
-	os.Exit(1)
+	if entry.Logger == nil {
+		_, _ = fmt.Fprintln(os.Stderr, "Logger not attached")
+		return
+	}
+	entry.Logger.Exit(1)
 }
 
 func (entry *Entry) Logf(level Level, format string, args ...interface{}) {
@@ -239,7 +244,11 @@ func (entry *Entry) Errorf(format string, args ...interface{}) {
 
 func (entry *Entry) Fatalf(format string, args ...interface{}) {
 	entry.Logf(FatalLevel, format, args...)
-	os.Exit(1)
+	if entry.Logger == nil {
+		_, _ = fmt.Fprintln(os.Stderr, "Logger not attached")
+		return
+	}
+	entry.Logger.Exit(1)
 }
 
 func (entry *Entry) Logln(level Level, args ...interface{}) {
@@ -270,5 +279,9 @@ func (entry *Entry) Errorln(args ...interface{}) {
 
 func (entry *Entry) Fatalln(args ...interface{}) {
 	entry.Logln(FatalLevel, args...)
-	os.Exit(1)
+	if entry.Logger == nil {
+		_, _ = fmt.Fprintln(os.Stderr, "Logger not attached")
+		return
+	}
+	entry.Logger.Exit(1)
 }
