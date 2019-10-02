@@ -73,3 +73,7 @@ func (mw *mutexWrap) unlock() {
 func (mw *mutexWrap) disable() {
 	mw.disabled = true
 }
+
+func (logger *Logger) IsLevelEnabled(level Level) bool {
+	return level >= logger.Level
+}

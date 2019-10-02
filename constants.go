@@ -4,10 +4,8 @@ import "time"
 
 // Level data
 const (
-	// TraceLevel level. More informational events than debug.
-	TraceLevel Level = iota
 	// DebugLevel level. Usually only enabled when debugging.
-	DebugLevel
+	DebugLevel = iota
 	// InfoLevel level. Operational information about what's going on in the application.
 	InfoLevel
 	// WarnLevel level. Non-critical entries that deserve eyes.
