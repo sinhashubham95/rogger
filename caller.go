@@ -12,11 +12,6 @@ var (
 	callerInitOnce sync.Once
 )
 
-const (
-	maxCallerDepth int = 25
-	knownFrames    int = 4
-)
-
 // getPackageName reduces a fully qualified function name to the package name
 func getPackageName(f string) string {
 	for {

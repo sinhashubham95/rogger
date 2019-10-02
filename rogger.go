@@ -30,21 +30,6 @@ func (l Level) String() string {
 	return "unknown"
 }
 
-const (
-	// TraceLevel level. More informational events than debug.
-	TraceLevel Level = iota
-	// DebugLevel level. Usually only enabled when debugging.
-	DebugLevel
-	// InfoLevel level. Operational information about what's going on in the application.
-	InfoLevel
-	// WarnLevel level. Non-critical entries that deserve eyes.
-	WarnLevel
-	// ErrorLevel level. Used for errors that should definitely be noted.
-	ErrorLevel
-	// FatalLevel level. Logs and then calls `logger.Exit(1)`.
-	FatalLevel
-)
-
 // Logger is the type used for main logging
 type Logger struct {
 	// it is locked with mutex before any log is sent to this
@@ -53,7 +38,7 @@ type Logger struct {
 	Out io.Writer
 
 	// formatter formats logs before finally sending to the writer
-	Formatter
+	Formatter Formatter
 
 	// Flag for whether to log caller info (off by default)
 	ReportCaller bool

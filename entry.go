@@ -21,6 +21,9 @@ type Entry struct {
 	// time at which log was created
 	Time *time.Time
 
+	// level the log entry was logged at
+	Level Level
+
 	// calling method with package name
 	Caller *runtime.Frame
 
@@ -42,4 +45,15 @@ func init() {
 	}
 	// start at the bottom of the stack before the package name is cached
 	minCallerDepth = 1
+}
+
+func NewEntry(logger *Logger) *Entry {
+	return &Entry{
+		Logger: logger,
+		Data:   make(Params),
+	}
+}
+
+func (entry *Entry) HasCaller() bool {
+	return entry.Logger != nil && entry.Logger.ReportCaller && entry.Caller != nil
 }
