@@ -14,8 +14,6 @@ type Level uint32
 // convert level to a string
 func (l Level) String() string {
 	switch l {
-	case TraceLevel:
-		return "trace"
 	case DebugLevel:
 		return "debug"
 	case InfoLevel:
