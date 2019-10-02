@@ -68,7 +68,7 @@ func (entry *Entry) HasCaller() bool {
 }
 
 func (entry *Entry) String() (string, error) {
-	if entry.Logger == nil {
+	if entry.checkLoggerAttached() {
 		return "", LoggerNotAttached
 	}
 	formatted, err := entry.Logger.Formatter.Format(entry)
@@ -142,6 +142,14 @@ func (entry *Entry) WithTime(t time.Time) *Entry {
 	}
 }
 
+func (entry *Entry) checkLoggerAttached() bool {
+	if entry.checkLoggerAttached() {
+		_, _ = fmt.Fprintln(os.Stderr, "Logger not attached")
+		return true
+	}
+	return false
+}
+
 // This function is not declared with a pointer value because otherwise
 // race conditions will occur when using multiple goroutines
 func (entry Entry) log(l Level, msg string) {
@@ -182,7 +190,7 @@ func (entry *Entry) write() {
 }
 
 func (entry *Entry) Log(level Level, args ...interface{}) {
-	if entry.Logger == nil {
+	if entry.checkLoggerAttached() {
 		_, _ = fmt.Fprintln(os.Stderr, "Logger not attached")
 		return
 	}
@@ -209,7 +217,7 @@ func (entry *Entry) Error(args ...interface{}) {
 
 func (entry *Entry) Fatal(args ...interface{}) {
 	entry.Log(FatalLevel, args...)
-	if entry.Logger == nil {
+	if entry.checkLoggerAttached() {
 		_, _ = fmt.Fprintln(os.Stderr, "Logger not attached")
 		return
 	}
@@ -217,7 +225,7 @@ func (entry *Entry) Fatal(args ...interface{}) {
 }
 
 func (entry *Entry) Logf(level Level, format string, args ...interface{}) {
-	if entry.Logger == nil {
+	if entry.checkLoggerAttached() {
 		_, _ = fmt.Fprintln(os.Stderr, "Logger not attached")
 		return
 	}
@@ -244,7 +252,7 @@ func (entry *Entry) Errorf(format string, args ...interface{}) {
 
 func (entry *Entry) Fatalf(format string, args ...interface{}) {
 	entry.Logf(FatalLevel, format, args...)
-	if entry.Logger == nil {
+	if entry.checkLoggerAttached() {
 		_, _ = fmt.Fprintln(os.Stderr, "Logger not attached")
 		return
 	}
@@ -252,7 +260,7 @@ func (entry *Entry) Fatalf(format string, args ...interface{}) {
 }
 
 func (entry *Entry) Logln(level Level, args ...interface{}) {
-	if entry.Logger == nil {
+	if entry.checkLoggerAttached() {
 		_, _ = fmt.Fprintln(os.Stderr, "Logger not attached")
 		return
 	}
@@ -279,8 +287,7 @@ func (entry *Entry) Errorln(args ...interface{}) {
 
 func (entry *Entry) Fatalln(args ...interface{}) {
 	entry.Logln(FatalLevel, args...)
-	if entry.Logger == nil {
-		_, _ = fmt.Fprintln(os.Stderr, "Logger not attached")
+	if entry.checkLoggerAttached() {
 		return
 	}
 	entry.Logger.Exit(1)
